@@ -6,8 +6,7 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   const apiHost = environment.API_HOST;
 
   const modifiedReq = req.clone({
-    setParams: { apikey: apiKey },
-    headers: req.headers.set('x-api-host', apiHost)
+    setParams: { apikey: apiKey, host: apiHost }
   });
 
   return next(modifiedReq);
