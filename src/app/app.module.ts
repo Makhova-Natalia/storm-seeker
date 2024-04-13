@@ -4,6 +4,7 @@ import { HeaderComponent } from "./shared/components/header/header.component";
 import { MaterialModule } from "./material-module";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { CommonModule } from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -11,7 +12,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     HeaderComponent
   ],
   imports: [
-    BrowserModule,
+    CommonModule,
     BrowserAnimationsModule,
     MaterialModule,
   ],
