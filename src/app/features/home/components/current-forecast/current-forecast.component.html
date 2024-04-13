@@ -1,1 +1,9 @@
-<p>current-forecast works!</p>
+<div class="current-forecast_container">
+  <mat-card>
+    <img [src]="weatherIcon" alt="Image" class="current-forecast_icon">
+  </mat-card>
+  <div class="current-forecast_info">
+    <p>{{ cityName }}</p>
+    <p>Другий параграф</p>
+  </div>
+</div>

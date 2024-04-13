@@ -7,6 +7,7 @@ export interface WeatherConditions {
     }
   },
   WeatherText: string,
+  WeatherIcon: number,
 }
 
 export interface SearchResult {

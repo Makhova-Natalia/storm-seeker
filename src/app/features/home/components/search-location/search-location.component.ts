@@ -13,10 +13,9 @@ import { Observable, Subject, takeUntil } from "rxjs";
   styleUrl: './search-location.component.css'
 })
 export class SearchLocationComponent implements OnInit, OnDestroy {
-  readonly defaultCity: string = 'Kiev';
   private destroyed$$: Subject<void> = new Subject<void>();
 
-  cityName: string = this.defaultCity;
+  cityName: string = 'Kiev';
   // searchResult$: Observable<SearchResult>;
   // currentConditions$: Observable<WeatherConditions>;
 
@@ -26,8 +25,8 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // this.searchResult$ = this.weatherService.getSearchResult();
     // this.currentConditions$ = this.weatherService.getCurrentConditions();
-
-    this.fetchWeatherData(this.defaultCity);
+    this.weatherService.setCityName(this.cityName);
+    this.fetchWeatherData(this.cityName);
   }
 
   private fetchWeatherData(cityName: string): void {

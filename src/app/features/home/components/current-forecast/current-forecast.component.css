@@ -1,0 +1,16 @@
+.current-forecast_container {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.current-forecast_icon {
+  max-height: 200px;
+  max-width: 200px;
+  float: left
+}
+
+.current-forecast_info {
+  display: flex;
+  flex-direction: column;
+}
