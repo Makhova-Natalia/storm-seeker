@@ -2,8 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MaterialModule } from "../../../../material-module";
 import { FormsModule } from "@angular/forms";
 import { WeatherService } from "../../../../core/services/weather.service";
-import { SearchResult, WeatherConditions } from "../../../../core/models/weather.model";
-import { Observable, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: 'app-search-location',
@@ -16,16 +15,11 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
   private destroyed$$: Subject<void> = new Subject<void>();
 
   cityName: string = 'Kiev';
-  // searchResult$: Observable<SearchResult>;
-  // currentConditions$: Observable<WeatherConditions>;
 
   constructor(private weatherService: WeatherService) {
   }
 
   ngOnInit() {
-    // this.searchResult$ = this.weatherService.getSearchResult();
-    // this.currentConditions$ = this.weatherService.getCurrentConditions();
-    this.weatherService.setCityName(this.cityName);
     this.fetchWeatherData(this.cityName);
   }
 
@@ -35,9 +29,10 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed$$)
       )
       .subscribe(val => {
-      this.weatherService.setSearchResult(val[0]);
-      this.getWeatherConditions(val[0].Key);
-    })
+        this.weatherService.setSearchResult(val[0]);
+        this.getWeatherConditions(val[0].Key);
+      })
+    this.weatherService.setCityName(this.cityName);
   }
 
   searchLocation(): void {
@@ -50,8 +45,8 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed$$)
       )
       .subscribe(val => {
-      this.weatherService.setCurrentConditions(val[0]);
-    });
+        this.weatherService.setCurrentConditions(val[0]);
+      });
   }
 
   ngOnDestroy() {

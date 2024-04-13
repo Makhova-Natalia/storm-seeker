@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, of, tap } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { SearchResult, WeatherConditions } from "../models/weather.model";
+import { URL_BODIES } from "../models/weatherData.config";
 
 
 @Injectable({
@@ -13,17 +14,14 @@ export class WeatherService {
   private currentConditions$$: BehaviorSubject<WeatherConditions> = new BehaviorSubject<WeatherConditions>({} as WeatherConditions);
   private cachedSearchResult: SearchResult[];
   private cachedCurrentConditions: WeatherConditions[];
+  private URLBodies = URL_BODIES;
+  private cityName$$: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
   readonly API_HOST = environment.API_HOST;
   readonly API_KEY = environment.API_KEY;
 
-  readonly URL_BODIES = {
-    autocomplete: 'locations/v1/cities/autocomplete',
-    currentWeather: 'currentconditions/v1',
-    fiveDaysForecasts: 'forecasts/v1/daily/5day/'
-}
-
-  constructor( private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {
+  }
 
   setSearchResult(location: SearchResult): void {
     this.searchResult$$.next(location);
@@ -37,13 +35,21 @@ export class WeatherService {
     this.currentConditions$$.next(conditions);
   }
 
-  getCurrentConditions(): Observable<WeatherConditions> {
+  getCurrentForecast(): Observable<WeatherConditions> {
     return this.currentConditions$$.asObservable();
   }
 
+  setCityName(cityName: string): void {
+    this.cityName$$.next(cityName);
+  }
+
+  getCityName(): Observable<string> {
+    return this.cityName$$.asObservable();
+  }
+
   searchLocation(query: string): Observable<SearchResult[]> {
-    if(environment.production || !this.cachedSearchResult) {
-      return this.http.get<SearchResult[]>(`${this.API_HOST}/${this.URL_BODIES.autocomplete}`, {
+    if (!environment.production || !this.cachedSearchResult) {
+      return this.http.get<SearchResult[]>(`${this.API_HOST}/${this.URLBodies.autocomplete}`, {
         params: {apikey: this.API_KEY, q: query}
       })
         .pipe(
@@ -57,8 +63,8 @@ export class WeatherService {
   }
 
   getCurrentWeatherConditions(locationKey: string): Observable<WeatherConditions[]> {
-    if (environment.production || !this.cachedCurrentConditions) {
-      return this.http.get<WeatherConditions[]>(`${this.API_HOST}/${this.URL_BODIES.currentWeather}/${locationKey}`, {
+    if (!environment.production || !this.cachedCurrentConditions) {
+      return this.http.get<WeatherConditions[]>(`${this.API_HOST}/${this.URLBodies.currentWeather}/${locationKey}`, {
         params: {apikey: this.API_KEY}
       })
         .pipe(

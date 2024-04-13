@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MaterialModule } from "../../../../material-module";
 import { WeatherConditions } from "../../../../core/models/weather.model";
 import { WeatherService } from "../../../../core/services/weather.service";
-import { Observable, Subject, takeUntil, tap } from "rxjs";
+import { Subject, takeUntil, tap } from "rxjs";
 import { ICONS } from "../../../../core/models/weatherData.config";
 
 @Component({
@@ -14,6 +14,7 @@ import { ICONS } from "../../../../core/models/weatherData.config";
 })
 export class CurrentForecastComponent implements OnInit, OnDestroy {
   readonly ICON_URL: string = '../../../../assets/img';
+  readonly DEGREE: string = '\xB0';
 
   private currentForecast: WeatherConditions;
   private ICONS_NAME: { [key: string]: string } = ICONS;
@@ -22,24 +23,43 @@ export class CurrentForecastComponent implements OnInit, OnDestroy {
 
   cityName: string;
   weatherIcon: string;
+  temperature: string;
 
   constructor(private weatherService: WeatherService) {
   }
 
   ngOnInit() {
+    this.getDataForecast();
+    this.setCityName();
+  }
+
+  private getDataForecast(): void {
     this.weatherService.getCurrentForecast()
       .pipe(
         takeUntil(this.destroyed$$),
-        tap((val: WeatherConditions) => {
-          this.currentForecast = val;
-          this.iconNumber = val.WeatherIcon;
-          this.weatherIcon = `${this.ICON_URL}/${this.ICONS_NAME[this.iconNumber]}`
+        tap((conditions: WeatherConditions) => {
+          this.setDataForecast(conditions);
         })
       )
       .subscribe();
-    console.log(this.weatherService.getCityName())
+  }
 
-    this.cityName = this.weatherService.getCityName();
+  private setDataForecast(conditions: WeatherConditions): void {
+    this.currentForecast = conditions;
+    this.iconNumber = conditions.WeatherIcon;
+    this.weatherIcon = `${this.ICON_URL}/${this.ICONS_NAME[this.iconNumber]}`;
+    this.temperature = `${conditions?.Temperature?.Metric.Value}${this.DEGREE} C`;
+  }
+
+  private setCityName() {
+    this.weatherService.getCityName()
+      .pipe(
+        takeUntil(this.destroyed$$),
+        tap((cityName: string) => {
+          this.cityName = cityName;
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy() {
