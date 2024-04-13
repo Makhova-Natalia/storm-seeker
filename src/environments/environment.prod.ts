@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  API_KEY: 'Ruhp4YsHM0R4bowUNFkuO1UF4fHCop5I',
+  API_KEY: 'Pwuwi4iXZFkv8pThrdPcNSiOtf1N5e8y',
   API_HOST: 'http://dataservice.accuweather.com'
 };

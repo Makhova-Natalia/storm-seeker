@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, Observable, of, tap } from "rxjs";
+import { BehaviorSubject, map, Observable, of, tap } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { SearchResult, WeatherConditions } from "../models/weather.model";
+import { URL_BODIES } from "../models/weatherData.config";
+import { LocalStorageService } from "./local-storage.service";
 
 
 @Injectable({
@@ -13,17 +15,15 @@ export class WeatherService {
   private currentConditions$$: BehaviorSubject<WeatherConditions> = new BehaviorSubject<WeatherConditions>({} as WeatherConditions);
   private cachedSearchResult: SearchResult[];
   private cachedCurrentConditions: WeatherConditions[];
+  private URLBodies = URL_BODIES;
+  private cityName$$: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
   readonly API_HOST = environment.API_HOST;
   readonly API_KEY = environment.API_KEY;
 
-  readonly URL_BODIES = {
-    autocomplete: 'locations/v1/cities/autocomplete',
-    currentWeather: 'currentconditions/v1',
-    fiveDaysForecasts: 'forecasts/v1/daily/5day/'
-}
-
-  constructor( private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient,
+              private localStorage: LocalStorageService) {
+  }
 
   setSearchResult(location: SearchResult): void {
     this.searchResult$$.next(location);
@@ -37,37 +37,59 @@ export class WeatherService {
     this.currentConditions$$.next(conditions);
   }
 
-  getCurrentConditions(): Observable<WeatherConditions> {
+  getCurrentForecast(): Observable<WeatherConditions> {
     return this.currentConditions$$.asObservable();
   }
 
+  setCityName(cityName: string): void {
+    this.cityName$$.next(cityName);
+  }
+
+  getCityName(): Observable<string> {
+    return this.cityName$$.asObservable();
+  }
+
+  private getCityInfo(query: string): Observable<SearchResult[]> {
+    return this.http.get<SearchResult[]>(`${this.API_HOST}/${this.URLBodies.autocomplete}`, {
+      params: {apikey: this.API_KEY, q: query}
+    })
+  }
+
+  private getForecastInfo(locationKey: string): Observable<WeatherConditions[]> {
+    return this.http.get<WeatherConditions[]>(`${this.API_HOST}/${this.URLBodies.currentWeather}/${locationKey}`, {
+      params: {apikey: this.API_KEY}
+    })
+  }
+
   searchLocation(query: string): Observable<SearchResult[]> {
-    if(environment.production || !this.cachedSearchResult) {
-      return this.http.get<SearchResult[]>(`${this.API_HOST}/${this.URL_BODIES.autocomplete}`, {
-        params: {apikey: this.API_KEY, q: query}
-      })
+    if (environment.production || !this.localStorage.isDataExist(query)) {
+      return this.getCityInfo(query)
         .pipe(
           tap((response: SearchResult[]) => {
-            this.cachedSearchResult = response;
+            this.localStorage.setData(query, response);
           })
         );
     } else {
-      return of(this.cachedSearchResult);
+      return of(this.localStorage.getData(query))
+        .pipe(
+          map(data => data as SearchResult[])
+        );
     }
   }
 
   getCurrentWeatherConditions(locationKey: string): Observable<WeatherConditions[]> {
-    if (environment.production || !this.cachedCurrentConditions) {
-      return this.http.get<WeatherConditions[]>(`${this.API_HOST}/${this.URL_BODIES.currentWeather}/${locationKey}`, {
-        params: {apikey: this.API_KEY}
-      })
+    if (environment.production || !this.localStorage.isDataExist(locationKey)) {
+      return this.getForecastInfo(locationKey)
         .pipe(
           tap((response: WeatherConditions[]) => {
-            this.cachedCurrentConditions = response;
+            this.localStorage.setData(locationKey, response);
           })
         );
     } else {
-      return of(this.cachedCurrentConditions);
+      return of(this.localStorage.getData(locationKey))
+        .pipe(
+          map(data => data as WeatherConditions[])
+        );
     }
   }
 }
