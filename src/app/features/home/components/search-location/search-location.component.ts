@@ -37,6 +37,7 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
 
   searchLocation(): void {
     this.fetchWeatherData(this.cityName);
+    this.weatherService.setIsFavorite(false);
   }
 
   getWeatherConditions(locationKey: string): void {

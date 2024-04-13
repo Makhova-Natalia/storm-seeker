@@ -11,5 +11,12 @@ export interface WeatherConditions {
 }
 
 export interface SearchResult {
-  Key: string;
+  Key: string
+}
+
+export interface FavoriteLocation {
+  id: number,
+  cityName: string,
+  temperature: number,
+  weatherText: string
 }
