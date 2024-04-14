@@ -25,12 +25,12 @@ export interface DailyForecast {
   Date: string,
   Temperature: {
     Maximum: {
-      Value: number,
+      Value: string,
       UnitType: number
     }
   },
   Day: {
-    IconPhrase: string,
+    Icon: number,
   },
 }
 
