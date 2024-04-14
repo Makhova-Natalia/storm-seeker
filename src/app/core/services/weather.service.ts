@@ -20,7 +20,6 @@ export class WeatherService {
   private isEmpty$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private favoriteUpdated$$: BehaviorSubject<void> = new BehaviorSubject<void>(undefined);
 
-
   readonly API_HOST = environment.API_HOST;
   readonly API_KEY = environment.API_KEY;
 
@@ -96,11 +95,11 @@ export class WeatherService {
     }
   }
 
-  checkFavoriteList(location: FavoriteLocation): boolean {
+  checkFavoriteList(cityName: string): boolean {
     const favorites = this.localStorageService.getData('favorites');
 
     if(favorites) {
-      return favorites.some((fav: FavoriteLocation) => fav.id === location.id);
+      return favorites.some((fav: FavoriteLocation) => fav.cityName === cityName);
     }
 
     return false

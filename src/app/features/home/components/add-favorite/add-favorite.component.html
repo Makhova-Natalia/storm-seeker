@@ -1,8 +1,8 @@
 <mat-card class="custom-mat-card">
   <mat-card-content class="favorite-container">
-    <mat-icon class="favorite-icon" [ngClass]=" isFavorite ? 'added-to-favorite' : 'not-added-to-favorite' ">favorite</mat-icon>
+    <mat-icon class="favorite-icon" [ngClass]=" (isFavorite$ | async) ? 'added-to-favorite' : 'not-added-to-favorite' ">favorite</mat-icon>
     <button mat-button class="btn-add-to-favorite" (click)="toggleFavorite()">
-      {{ isFavorite ? 'Remove from Favorites' : 'Add to Favorites' }}
+      {{ (isFavorite$ | async) ? 'Remove from Favorites' : 'Add to Favorites' }}
     </button>
   </mat-card-content>
 </mat-card>

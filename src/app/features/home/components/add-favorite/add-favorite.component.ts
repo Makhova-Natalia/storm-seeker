@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MaterialModule } from "../../../../material-module";
-import { NgClass } from "@angular/common";
+import { CommonModule, NgClass } from "@angular/common";
 import { WeatherService } from "../../../../core/services/weather.service";
 import { FavoriteLocation, SearchResult, WeatherConditions } from "../../../../core/models/weather.model";
-import { Subject, takeUntil, tap } from "rxjs";
+import { BehaviorSubject, Observable, Subject, takeUntil, tap } from "rxjs";
 
 @Component({
   selector: 'app-add-favorite',
   standalone: true,
-  imports: [MaterialModule, NgClass],
+  imports: [MaterialModule, NgClass, CommonModule],
   templateUrl: './add-favorite.component.html',
   styleUrl: './add-favorite.component.css'
 })
@@ -17,20 +17,26 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
   private cityName: string = '';
   private id: string;
   private temperature: number;
-  private weatherText: string
-  isFavorite: boolean = false;
+  private weatherText: string;
+  private isFavoriteSubject$$: BehaviorSubject<boolean>;
+  isFavorite$: Observable<boolean>;
 
 
   constructor(private weatherService: WeatherService) {
+    this.isFavoriteSubject$$ = new BehaviorSubject<boolean>(this.weatherService.checkFavoriteList(this.setFavoriteLocation().cityName));
+    this.isFavorite$ = this.isFavoriteSubject$$.asObservable();
   }
 
   ngOnInit() {
     this.setIsFavorite();
     this.setForecast();
 
-    this.weatherService.getFavoriteUpdated().subscribe(() => {
-      this.isFavorite = this.weatherService.checkFavoriteList(this.setFavoriteLocation());
-      console.log(this.isFavorite)
+    this.weatherService.getFavoriteUpdated()
+      .pipe(
+        takeUntil(this.destroyed$$)
+      )
+      .subscribe(() => {
+      this.isFavoriteSubject$$.next(this.weatherService.checkFavoriteList(this.setFavoriteLocation().cityName));
     })
   }
 
@@ -65,7 +71,7 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroyed$$),
         tap((isFav: boolean) => {
-          this.isFavorite = isFav;
+          this.isFavoriteSubject$$.next(isFav);
         })
       )
       .subscribe();
@@ -95,9 +101,9 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
   }
 
   toggleFavorite() {
-    this.weatherService.setIsFavorite(!this.isFavorite);
+    this.weatherService.setIsFavorite(!this.isFavoriteSubject$$.value);
 
-    if (this.isFavorite) {
+    if (this.isFavoriteSubject$$.value) {
       this.weatherService.addToFavoriteList(this.setFavoriteLocation());
     } else {
       this.weatherService.removeFromFavoriteList(this.id);
