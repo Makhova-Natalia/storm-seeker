@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MaterialModule } from "../../../../material-module";
 import { NgClass } from "@angular/common";
 import { WeatherService } from "../../../../core/services/weather.service";
-import { FavoriteLocation, WeatherConditions } from "../../../../core/models/weather.model";
+import { FavoriteLocation, SearchResult, WeatherConditions } from "../../../../core/models/weather.model";
 
 @Component({
   selector: 'app-add-favorite',
@@ -13,7 +13,7 @@ import { FavoriteLocation, WeatherConditions } from "../../../../core/models/wea
 })
 export class AddFavoriteComponent implements OnInit {
   private cityName: string = '';
-  private id: number;
+  private id: string;
   private temperature: number;
   private weatherText: string
   isFavorite: boolean = false;
@@ -30,10 +30,12 @@ export class AddFavoriteComponent implements OnInit {
       this.cityName = city;
     });
     this.weatherService.getCurrentForecast().subscribe((weather: WeatherConditions) => {
-      this.temperature = weather.Temperature.Metric.Value;
+      this.temperature = weather?.Temperature?.Metric.Value;
       this.weatherText = weather.WeatherText;
-      this.id = this.weatherService.getId();
     });
+    this.weatherService.getSearchResult().subscribe((city: SearchResult) => {
+      this.id = city.Key;
+    })
   }
 
   private setFavoriteLocation(): FavoriteLocation {

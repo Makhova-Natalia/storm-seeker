@@ -15,23 +15,18 @@ export class WeatherService {
   private currentConditions$$: BehaviorSubject<WeatherConditions> = new BehaviorSubject<WeatherConditions>({} as WeatherConditions);
   private URLBodies = URL_BODIES;
   private cityName$$: BehaviorSubject<string> = new BehaviorSubject<string>('');
-  private FAVORITES_LIST: FavoriteLocation[] = [];
-  private id: number = 0;
+  private favoritesList$$: BehaviorSubject<FavoriteLocation[]> = new BehaviorSubject<FavoriteLocation[]>([]);
   private isFavorite$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   readonly API_HOST = environment.API_HOST;
   readonly API_KEY = environment.API_KEY;
 
   constructor(private readonly http: HttpClient,
-              private localStorage: LocalStorageService) {
+              private localStorageService: LocalStorageService) {
   }
 
   setSearchResult(location: SearchResult): void {
     this.searchResult$$.next(location);
-  }
-
-  getId(): number {
-    return this.id++;
   }
 
   getSearchResult(): Observable<SearchResult> {
@@ -75,32 +70,39 @@ export class WeatherService {
   }
 
   addToFavoriteList(location: FavoriteLocation): void {
-    const isIncludedCity = Object.values(this.FAVORITES_LIST).includes(location);
+    const favorites = this.favoritesList$$.value;
+    const isIncludedCity = favorites.some(favorite => favorite.id === location.id);
 
-    if(!isIncludedCity) {
-      this.FAVORITES_LIST.push(location);
+    if (!isIncludedCity) {
+      favorites.push(location);
+      this.favoritesList$$.next(favorites);
+      this.localStorageService.setData('favorites', JSON.stringify(favorites));
     }
-
-    console.log(this.FAVORITES_LIST)
   }
 
-  removeFromFavoriteList(id: number): void {
-    const indexToRemove = this.FAVORITES_LIST.findIndex(element => element.id === id);
+  removeFromFavoriteList(id: string): void {
+    const favorites = this.favoritesList$$.value;
+    const indexToRemove = favorites.findIndex(element => element.id === id);
 
-    this.FAVORITES_LIST.splice(indexToRemove, 1);
-    console.log(this.FAVORITES_LIST)
+    if (indexToRemove !== -1) {
+      favorites.splice(indexToRemove, 1);
+      this.favoritesList$$.next(favorites);
+      this.localStorageService.setData('favorites', JSON.stringify(favorites));
+    }
   }
 
   searchLocation(query: string): Observable<SearchResult[]> {
-    if (environment.production || !this.localStorage.isDataExist(query)) {
+    if (environment.production) {
+      return this.getCityInfo(query);
+    } else if (!this.localStorageService.isDataExist(query)) {
       return this.getCityInfo(query)
         .pipe(
           tap((response: SearchResult[]) => {
-            this.localStorage.setData(query, response);
+            this.localStorageService.setData(query, response);
           })
         );
     } else {
-      return of(this.localStorage.getData(query))
+      return of(this.localStorageService.getData(query))
         .pipe(
           map(data => data as SearchResult[])
         );
@@ -108,15 +110,17 @@ export class WeatherService {
   }
 
   getCurrentWeatherConditions(locationKey: string): Observable<WeatherConditions[]> {
-    if (environment.production || !this.localStorage.isDataExist(locationKey)) {
+    if (environment.production) {
+      return this.getForecastInfo(locationKey);
+    } else if (!this.localStorageService.isDataExist(locationKey)) {
       return this.getForecastInfo(locationKey)
         .pipe(
           tap((response: WeatherConditions[]) => {
-            this.localStorage.setData(locationKey, response);
+            this.localStorageService.setData(locationKey, response);
           })
         );
     } else {
-      return of(this.localStorage.getData(locationKey))
+      return of(this.localStorageService.getData(locationKey))
         .pipe(
           map(data => data as WeatherConditions[])
         );

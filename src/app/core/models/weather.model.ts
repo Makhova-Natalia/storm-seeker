@@ -15,7 +15,7 @@ export interface SearchResult {
 }
 
 export interface FavoriteLocation {
-  id: number,
+  id: string,
   cityName: string,
   temperature: number,
   weatherText: string
