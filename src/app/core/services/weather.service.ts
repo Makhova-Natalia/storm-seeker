@@ -17,6 +17,8 @@ export class WeatherService {
   private cityName$$: BehaviorSubject<string> = new BehaviorSubject<string>('');
   private favoritesList$$: BehaviorSubject<FavoriteLocation[]> = new BehaviorSubject<FavoriteLocation[]>([]);
   private isFavorite$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private isEmpty$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
 
   readonly API_HOST = environment.API_HOST;
   readonly API_KEY = environment.API_KEY;
@@ -43,6 +45,14 @@ export class WeatherService {
 
   setCityName(cityName: string): void {
     this.cityName$$.next(cityName);
+  }
+
+  setIsEmpty(isEmpty: boolean): void {
+    this.isEmpty$$.next(isEmpty);
+  }
+
+  getIsEmpty(): Observable<boolean> {
+    return this.isEmpty$$.asObservable();
   }
 
   getCityName(): Observable<string> {

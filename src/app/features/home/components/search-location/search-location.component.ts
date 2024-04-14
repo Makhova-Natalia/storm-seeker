@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MaterialModule } from "../../../../material-module";
 import { FormsModule } from "@angular/forms";
 import { WeatherService } from "../../../../core/services/weather.service";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil, tap } from "rxjs";
+import { SearchResult } from "../../../../core/models/weather.model";
 
 @Component({
   selector: 'app-search-location',
@@ -26,11 +27,18 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
   private fetchWeatherData(cityName: string): void {
     this.weatherService.searchLocation(cityName)
       .pipe(
-        takeUntil(this.destroyed$$)
+        takeUntil(this.destroyed$$),
+        tap((val: SearchResult[]) => {
+          if(!val.length) {
+            this.weatherService.setIsEmpty(true);
+          } else {
+            this.weatherService.setIsEmpty(false);
+            this.weatherService.setSearchResult(val[0]);
+            this.getWeatherConditions(val[0].Key);
+          }
+        })
       )
       .subscribe(val => {
-        this.weatherService.setSearchResult(val[0]);
-        this.getWeatherConditions(val[0].Key);
       })
     this.weatherService.setCityName(this.cityName);
   }

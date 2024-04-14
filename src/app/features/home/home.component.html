@@ -2,11 +2,16 @@
   <mat-card-content class="search_center">
     <app-search-location></app-search-location>
   </mat-card-content>
-  <mat-card-content class="card-content-row">
-    <app-current-forecast></app-current-forecast>
-    <app-add-favorite></app-add-favorite>
-  </mat-card-content>
-  <mat-card-content>
-    <app-future-forecasts></app-future-forecasts>
-  </mat-card-content>
+  <div class="weather-info_container" *ngIf="!isEmpty">
+    <mat-card-content class="card-content-row">
+      <app-current-forecast></app-current-forecast>
+      <app-add-favorite></app-add-favorite>
+    </mat-card-content>
+    <mat-card-content>
+      <app-future-forecasts></app-future-forecasts>
+    </mat-card-content>
+  </div>
+  <div class="empty_container" *ngIf="isEmpty">
+    <p>This city wasn't found!</p>
+  </div>
 </mat-card>
