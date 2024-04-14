@@ -77,6 +77,14 @@ export class WeatherService {
     return this.favoriteUpdated$$.asObservable();
   }
 
+  getFavoritesList(): Observable<FavoriteLocation[]> {
+    return this.favoritesList$$.asObservable();
+  }
+
+  getFavoritesListFromStorage():FavoriteLocation[] {
+    return this.localStorageService.getData('favorites')
+  }
+
   private getCityInfo(query: string): Observable<SearchResult[]> {
     return this.http.get<SearchResult[]>(`${this.API_HOST}/${this.URLBodies.autocomplete}`, {
       params: {apikey: this.API_KEY, q: query}

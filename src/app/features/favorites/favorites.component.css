@@ -1,0 +1,14 @@
+.favorites_container {
+  padding: 10px 150px;
+  height: 100%;
+  position: relative;
+}
+
+.card-content-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0;
+  gap: 50px;
+  flex-wrap: wrap
+}

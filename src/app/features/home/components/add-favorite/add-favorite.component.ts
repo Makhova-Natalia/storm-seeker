@@ -18,6 +18,7 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
   private id: string;
   private temperature: number;
   private weatherText: string;
+  private weatherIcon: number;
   private isFavoriteSubject$$: BehaviorSubject<boolean>;
   isFavorite$: Observable<boolean>;
 
@@ -51,7 +52,8 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
       id: this.id,
       cityName: this.cityName,
       temperature: this.temperature,
-      weatherText: this.weatherText
+      weatherText: this.weatherText,
+      weatherIcon: this.weatherIcon
     }
   }
 
@@ -84,6 +86,7 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
         tap((weather: WeatherConditions) => {
           this.temperature = weather?.Temperature?.Metric.Value;
           this.weatherText = weather.WeatherText;
+          this.weatherIcon = weather.WeatherIcon;
         })
       )
       .subscribe();
