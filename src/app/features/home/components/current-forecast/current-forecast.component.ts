@@ -48,7 +48,7 @@ export class CurrentForecastComponent implements OnInit, OnDestroy {
     this.currentForecast = conditions;
     this.iconNumber = conditions.WeatherIcon;
     this.weatherIcon = `${this.ICON_URL}/${this.ICONS_NAME[this.iconNumber]}`;
-    this.temperature = `${conditions?.Temperature?.Metric.Value}${this.DEGREE} C`;
+    this.temperature = `${conditions?.Temperature?.Metric.Value}${this.DEGREE}C`;
   }
 
   private setCityName() {

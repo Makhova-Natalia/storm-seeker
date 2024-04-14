@@ -2,7 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, map, Observable, of, tap } from "rxjs";
 import { environment } from "../../../environments/environment";
-import { FavoriteLocation, SearchResult, WeatherConditions } from "../models/weather.model";
+import {
+  DailyForecast,
+  FavoriteLocation,
+  FutureForecasts,
+  SearchResult,
+  WeatherConditions
+} from "../models/weather.model";
 import { URL_BODIES } from "../models/weatherData.config";
 import { LocalStorageService } from "./local-storage.service";
 
@@ -83,6 +89,12 @@ export class WeatherService {
     })
   }
 
+  private getFutureForecasts(locationKey: string): Observable<FutureForecasts> {
+    return this.http.get<FutureForecasts>(`${this.API_HOST}/${this.URLBodies.fiveDaysForecasts}/${locationKey}`, {
+      params: {apikey: this.API_KEY, metric: true}
+    })
+  }
+
   addToFavoriteList(location: FavoriteLocation): void {
     const favorites = this.favoritesList$$.value;
     const isIncludedCity = favorites.some(favorite => favorite.id === location.id);
@@ -131,6 +143,24 @@ export class WeatherService {
       return of(this.localStorageService.getData(query))
         .pipe(
           map(data => data as SearchResult[])
+        );
+    }
+  }
+
+  getFiveDaysForecasts(locationKey: string): Observable<FutureForecasts> {
+    if (environment.production) {
+      return this.getFutureForecasts(locationKey);
+    } else if (!this.localStorageService.isDataExist(`${locationKey}_5Days`)) {
+      return this.getFutureForecasts(locationKey)
+        .pipe(
+          tap((response: FutureForecasts) => {
+            this.localStorageService.setData(`${locationKey}_5Days`, response);
+          })
+        );
+    } else {
+      return of(this.localStorageService.getData(`${locationKey}_5Days`))
+        .pipe(
+          map(data => data as FutureForecasts)
         );
     }
   }

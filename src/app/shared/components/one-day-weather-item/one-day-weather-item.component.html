@@ -1,0 +1,10 @@
+<mat-card class="item_container">
+  <img mat-card-image [src]="imageSrc" alt="Image" class="item-forecast_icon">
+  <p class="item_param" *ngIf="isDate(param); else notDate">{{ getDayOfWeek(param) }}</p>
+  <ng-template #notDate>
+    <p class="item_param">{{ param }}</p>
+  </ng-template>
+  <p class="item_temperature">{{ temperature }}</p>
+  <p class="item_weather_info" *ngIf="weatherInfo">{{ weatherInfo }}</p>
+</mat-card>
+
