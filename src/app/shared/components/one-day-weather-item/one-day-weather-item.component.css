@@ -1,0 +1,35 @@
+.item_container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin-top: 50px;
+  text-align: center;
+}
+
+.item-forecast_icon {
+  height: 200px;
+  opacity: 0.3;
+  padding: 5px;
+}
+
+.item_param,
+.item_temperature,
+.item_weather_info {
+  position: absolute;
+  font-size: 25px;
+  left: 0;
+  width: 100%;
+  transform: translateY(-50%);
+}
+
+.item_temperature {
+  top: 80px;
+}
+
+.item_param {
+  top: 30px;
+}
+
+.item_weather_info {
+  top: 130px;
+}

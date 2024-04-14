@@ -2,7 +2,7 @@ export interface WeatherConditions {
   Temperature: {
     Metric: {
       Value: number,
-      Unit: string,
+      // Unit: string,
       UnitType: number
     }
   },
@@ -19,4 +19,21 @@ export interface FavoriteLocation {
   cityName: string,
   temperature: number,
   weatherText: string
+}
+
+export interface DailyForecast {
+  Date: string,
+  Temperature: {
+    Maximum: {
+      Value: number,
+      UnitType: number
+    }
+  },
+  Day: {
+    IconPhrase: string,
+  },
+}
+
+export interface FutureForecasts {
+  DailyForecasts: DailyForecast[]
 }
