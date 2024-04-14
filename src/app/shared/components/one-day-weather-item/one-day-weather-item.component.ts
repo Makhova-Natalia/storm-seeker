@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MaterialModule } from "../../../material-module";
 import { CommonModule } from "@angular/common";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-one-day-weather-item',
@@ -14,6 +15,10 @@ export class OneDayWeatherItemComponent {
   @Input() param: string;
   @Input() temperature: string;
   @Input() weatherInfo: string;
+  @Input() allowNavigation: boolean;
+
+  constructor(private router: Router) {
+  }
 
   getDayOfWeek(dateString: string): string {
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -27,5 +32,9 @@ export class OneDayWeatherItemComponent {
     const date: Date = new Date(value);
 
     return !isNaN(date.getTime());
+  }
+
+  navigateToHomePage() {
+    this.router.navigate(['/home']);
   }
 }
