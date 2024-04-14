@@ -5,7 +5,7 @@ import { CommonModule } from "@angular/common";
 @Component({
   selector: 'app-one-day-weather-item',
   standalone: true,
-  imports: [ MaterialModule, CommonModule ],
+  imports: [MaterialModule, CommonModule],
   templateUrl: './one-day-weather-item.component.html',
   styleUrl: './one-day-weather-item.component.css'
 })
@@ -23,7 +23,9 @@ export class OneDayWeatherItemComponent {
     return daysOfWeek[dayOfWeekIndex];
   }
 
-  isDate(value: any): boolean {
-    return new Date(value) instanceof Date;
+  isDate(value: string): boolean {
+    const date: Date = new Date(value);
+
+    return !isNaN(date.getTime());
   }
 }
