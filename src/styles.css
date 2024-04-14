@@ -1,1 +1,11 @@
 @import '@angular/material/prebuilt-themes/purple-green.css';
+
+html,
+body {
+  min-width: 1240px;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}

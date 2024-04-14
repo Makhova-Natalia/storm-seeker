@@ -8,7 +8,7 @@ import { ICONS } from "../../../../core/models/weatherData.config";
 @Component({
   selector: 'app-current-forecast',
   standalone: true,
-  imports: [MaterialModule],
+  imports: [ MaterialModule ],
   templateUrl: './current-forecast.component.html',
   styleUrl: './current-forecast.component.css'
 })
