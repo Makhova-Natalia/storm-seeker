@@ -18,6 +18,7 @@ export class WeatherService {
   private favoritesList$$: BehaviorSubject<FavoriteLocation[]> = new BehaviorSubject<FavoriteLocation[]>([]);
   private isFavorite$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private isEmpty$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private favoriteUpdated$$: BehaviorSubject<void> = new BehaviorSubject<void>(undefined);
 
 
   readonly API_HOST = environment.API_HOST;
@@ -67,6 +68,10 @@ export class WeatherService {
     return this.isFavorite$$.asObservable();
   }
 
+  getFavoriteUpdated(): Observable<void> {
+    return this.favoriteUpdated$$.asObservable();
+  }
+
   private getCityInfo(query: string): Observable<SearchResult[]> {
     return this.http.get<SearchResult[]>(`${this.API_HOST}/${this.URLBodies.autocomplete}`, {
       params: {apikey: this.API_KEY, q: query}
@@ -86,8 +91,19 @@ export class WeatherService {
     if (!isIncludedCity) {
       favorites.push(location);
       this.favoritesList$$.next(favorites);
-      this.localStorageService.setData('favorites', JSON.stringify(favorites));
+      this.localStorageService.setData('favorites', favorites);
+      this.favoriteUpdated$$.next();
     }
+  }
+
+  checkFavoriteList(location: FavoriteLocation): boolean {
+    const favorites = this.localStorageService.getData('favorites');
+
+    if(favorites) {
+      return favorites.some((fav: FavoriteLocation) => fav.id === location.id);
+    }
+
+    return false
   }
 
   removeFromFavoriteList(id: string): void {
@@ -97,7 +113,8 @@ export class WeatherService {
     if (indexToRemove !== -1) {
       favorites.splice(indexToRemove, 1);
       this.favoritesList$$.next(favorites);
-      this.localStorageService.setData('favorites', JSON.stringify(favorites));
+      this.localStorageService.setData('favorites', favorites);
+      this.favoriteUpdated$$.next();
     }
   }
 
@@ -120,6 +137,7 @@ export class WeatherService {
   }
 
   getCurrentWeatherConditions(locationKey: string): Observable<WeatherConditions[]> {
+    this.favoriteUpdated$$.next();
     if (environment.production) {
       return this.getForecastInfo(locationKey);
     } else if (!this.localStorageService.isDataExist(locationKey)) {

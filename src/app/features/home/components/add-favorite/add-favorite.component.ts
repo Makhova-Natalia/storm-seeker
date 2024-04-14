@@ -26,6 +26,15 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.setIsFavorite();
+    this.setForecast();
+
+    this.weatherService.getFavoriteUpdated().subscribe(() => {
+      this.isFavorite = this.weatherService.checkFavoriteList(this.setFavoriteLocation());
+      console.log(this.isFavorite)
+    })
+  }
+
+  private setForecast(): void {
     this.setCityName();
     this.setCurrentForecast();
     this.setId();
