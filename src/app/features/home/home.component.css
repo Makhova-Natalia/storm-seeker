@@ -1,5 +1,5 @@
 .home_container {
-  padding: 10px 150px;
+  padding: 10px 10%;
   height: auto;
   position: relative;
 }
@@ -16,16 +16,24 @@
 }
 
 .empty_container {
-  position: absolute;;
-  top: 200px;
-  left: 0;
-  right: 0;
   display: flex;
   justify-content: center;
+  align-items: center;
   font-size: 28px;
+  height: 100vh;
 }
 
 .toggle-forecasts-view {
   margin: 20px 0;
-  left: 990px;
+  display: flex;
+  justify-content: flex-end;
+  border: none;
+}
+
+#btn_chart {
+  background-color: #BBD2D7;
+}
+
+#btn_forecasts {
+  background-color: #8BB3BB;
 }

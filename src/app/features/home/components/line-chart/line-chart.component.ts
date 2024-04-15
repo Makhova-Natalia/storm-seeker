@@ -38,13 +38,13 @@ export class LineChartComponent implements OnInit, AfterViewInit{
           {
             label: 'Day',
             data: this.getDayTemperatures(this.fiveDaysForecasts),
-            borderColor: 'rgba(255, 99, 132, 1)',
+            borderColor: '#BBD2D7',
             fill: false
           },
           {
             label: 'Night',
             data: this.getNightTemperatures(this.fiveDaysForecasts),
-            borderColor: 'rgba(54, 162, 235, 1)',
+            borderColor: '#467986',
             fill: false
           }
         ],

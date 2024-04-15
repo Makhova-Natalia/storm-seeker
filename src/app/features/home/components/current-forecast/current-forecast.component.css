@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   margin-top: 40px;
-  gap: 40px;
+  gap: 10%;
 }
 
 .current-forecast_icon {
@@ -16,4 +16,15 @@
   display: flex;
   flex-direction: column;
   font-size: 25px;
+}
+
+@media screen and (max-width: 768px) {
+  .current-forecast_icon {
+    height: 100px;
+    width: 100px;
+  }
+
+  .current-forecast_container p {
+    font-size: 14px;
+  }
 }
