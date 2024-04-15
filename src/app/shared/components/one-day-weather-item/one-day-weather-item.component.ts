@@ -29,12 +29,6 @@ export class OneDayWeatherItemComponent {
     return daysOfWeek[dayOfWeekIndex];
   }
 
-  isDate(value: string): boolean {
-    const date: Date = new Date(value);
-
-    return !isNaN(date.getTime());
-  }
-
   navigateToHomePage() {
     this.weatherService.setCityName(this.param)
     this.router.navigate(['/home']);

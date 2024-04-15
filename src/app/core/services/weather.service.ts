@@ -25,6 +25,7 @@ export class WeatherService {
   private isFavorite$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private isEmpty$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private favoriteUpdated$$: BehaviorSubject<void> = new BehaviorSubject<void>(undefined);
+  private fiveDaysForecasts$$: BehaviorSubject<DailyForecast[]> = new BehaviorSubject<DailyForecast[]>([]);
 
   readonly API_HOST = environment.API_HOST;
   readonly API_KEY = environment.API_KEY;
@@ -65,12 +66,20 @@ export class WeatherService {
     return this.cityName$$.asObservable();
   }
 
-  setIsFavorite(isFav: boolean) {
+  setIsFavorite(isFav: boolean): void {
     this.isFavorite$$.next(isFav);
   }
 
   getIsFavorite(): Observable<boolean> {
     return this.isFavorite$$.asObservable();
+  }
+
+  setFiveDaysForecasts(forecasts: DailyForecast[]): void {
+    this.fiveDaysForecasts$$.next(forecasts);
+  }
+
+  getFiveForecasts(): Observable<DailyForecast[]> {
+    return this.fiveDaysForecasts$$.asObservable();
   }
 
   getFavoriteUpdated(): Observable<void> {
