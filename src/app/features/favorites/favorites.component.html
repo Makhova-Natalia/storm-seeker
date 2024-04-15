@@ -1,1 +1,15 @@
-<p>favorites works!</p>
+<div class="favorites_container">
+  <mat-card-content class="card-content-row" *ngIf="favoritesList.length; else showText">
+    <app-one-day-weather-item
+      *ngFor="let item of favoritesList"
+      [imageSrc]="ICON_URL + ICONS_NAME[item['weatherIcon']]"
+      [param]="item['cityName']"
+      [temperature]="item['temperature'] + '&#176;' + 'C'"
+      [weatherInfo]="item['weatherText']"
+      [allowNavigation]="true"
+    ></app-one-day-weather-item>
+  </mat-card-content>
+  <ng-template #showText class="empty_container">
+    <p class="empty_text">You don't have any favorites cities!</p>
+  </ng-template>
+</div>

@@ -20,7 +20,7 @@ export class WeatherService {
   private searchResult$$: BehaviorSubject<SearchResult> = new BehaviorSubject<SearchResult>({} as SearchResult);
   private currentConditions$$: BehaviorSubject<WeatherConditions> = new BehaviorSubject<WeatherConditions>({} as WeatherConditions);
   private URLBodies = URL_BODIES;
-  private cityName$$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  private cityName$$: BehaviorSubject<string> = new BehaviorSubject<string>('Kiev');
   private favoritesList$$: BehaviorSubject<FavoriteLocation[]> = new BehaviorSubject<FavoriteLocation[]>([]);
   private isFavorite$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private isEmpty$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -75,6 +75,14 @@ export class WeatherService {
 
   getFavoriteUpdated(): Observable<void> {
     return this.favoriteUpdated$$.asObservable();
+  }
+
+  getFavoritesList(): Observable<FavoriteLocation[]> {
+    return this.favoritesList$$.asObservable();
+  }
+
+  getFavoritesListFromStorage():FavoriteLocation[] {
+    return this.localStorageService.getData('favorites')
   }
 
   private getCityInfo(query: string): Observable<SearchResult[]> {

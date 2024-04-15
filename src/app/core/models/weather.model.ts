@@ -2,7 +2,6 @@ export interface WeatherConditions {
   Temperature: {
     Metric: {
       Value: number,
-      // Unit: string,
       UnitType: number
     }
   },
@@ -18,7 +17,8 @@ export interface FavoriteLocation {
   id: string,
   cityName: string,
   temperature: number,
-  weatherText: string
+  weatherText: string,
+  weatherIcon: number,
 }
 
 export interface DailyForecast {

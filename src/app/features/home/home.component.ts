@@ -6,7 +6,7 @@ import { CurrentForecastComponent } from "./components/current-forecast/current-
 import { FutureForecastsComponent } from "./components/future-forecasts/future-forecasts.component";
 import { WeatherService } from "../../core/services/weather.service";
 import { CommonModule } from "@angular/common";
-import { Subject, takeUntil } from "rxjs";
+import { Observable, Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: 'app-home',
@@ -25,19 +25,15 @@ import { Subject, takeUntil } from "rxjs";
 export class HomeComponent implements OnInit, OnDestroy {
   private destroyed$$: Subject<void> = new Subject<void>();
 
-  isEmpty: boolean = false;
+  isEmpty$: Observable<boolean>;
 
   constructor(private weatherService: WeatherService) {
   }
 
   ngOnInit() {
-    this.weatherService.getIsEmpty()
-      .pipe(
-        takeUntil(this.destroyed$$)
-      )
-      .subscribe((val: boolean) => {
-        this.isEmpty = val;
-      })
+    this.isEmpty$ = this.weatherService.getIsEmpty().pipe(
+      takeUntil(this.destroyed$$)
+    );
   }
 
   ngOnDestroy() {
