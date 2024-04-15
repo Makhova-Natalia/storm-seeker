@@ -8,19 +8,28 @@ import { SearchResult } from "../../../../core/models/weather.model";
 @Component({
   selector: 'app-search-location',
   standalone: true,
-  imports: [MaterialModule, FormsModule],
+  imports: [ MaterialModule, FormsModule ],
   templateUrl: './search-location.component.html',
   styleUrl: './search-location.component.css'
 })
 export class SearchLocationComponent implements OnInit, OnDestroy {
   private destroyed$$: Subject<void> = new Subject<void>();
 
-  cityName: string = 'Kiev';
+  cityName: string = '';
 
   constructor(private weatherService: WeatherService) {
   }
 
   ngOnInit() {
+    this.weatherService.getCityName()
+      .pipe(
+        takeUntil(this.destroyed$$),
+        tap((city: string) => {
+          this.cityName = city;
+        })
+      )
+      .subscribe();
+
     this.fetchWeatherData(this.cityName);
   }
 
@@ -29,7 +38,7 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroyed$$),
         tap((val: SearchResult[]) => {
-          if(!val.length) {
+          if (!val.length) {
             this.weatherService.setIsEmpty(true);
           } else {
             this.weatherService.setIsEmpty(false);

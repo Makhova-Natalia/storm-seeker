@@ -20,7 +20,7 @@ export class WeatherService {
   private searchResult$$: BehaviorSubject<SearchResult> = new BehaviorSubject<SearchResult>({} as SearchResult);
   private currentConditions$$: BehaviorSubject<WeatherConditions> = new BehaviorSubject<WeatherConditions>({} as WeatherConditions);
   private URLBodies = URL_BODIES;
-  private cityName$$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  private cityName$$: BehaviorSubject<string> = new BehaviorSubject<string>('Kiev');
   private favoritesList$$: BehaviorSubject<FavoriteLocation[]> = new BehaviorSubject<FavoriteLocation[]>([]);
   private isFavorite$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private isEmpty$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
