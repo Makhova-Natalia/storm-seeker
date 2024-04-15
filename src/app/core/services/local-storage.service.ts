@@ -23,8 +23,4 @@ export class LocalStorageService {
   isDataExist(key: string): boolean {
     return Boolean(localStorage.getItem(key));
   }
-
-  clearData(key: string): void {
-    localStorage.removeItem(key);
-  }
 }

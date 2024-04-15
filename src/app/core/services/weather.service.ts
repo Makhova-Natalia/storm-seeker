@@ -3,83 +3,26 @@ import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, map, Observable, of, tap } from "rxjs";
 import { environment } from "../../../environments/environment";
 import {
-  DailyForecast,
   FavoriteLocation,
   FutureForecasts,
   SearchResult,
   WeatherConditions
 } from "../models/weather.model";
-import { URL_BODIES } from "../models/weatherData.config";
 import { LocalStorageService } from "./local-storage.service";
+import { RequestsService } from "./requests.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class WeatherService {
-  private searchResult$$: BehaviorSubject<SearchResult> = new BehaviorSubject<SearchResult>({} as SearchResult);
-  private currentConditions$$: BehaviorSubject<WeatherConditions> = new BehaviorSubject<WeatherConditions>({} as WeatherConditions);
-  private URLBodies = URL_BODIES;
-  private cityName$$: BehaviorSubject<string> = new BehaviorSubject<string>('Kiev');
   private favoritesList$$: BehaviorSubject<FavoriteLocation[]> = new BehaviorSubject<FavoriteLocation[]>([]);
-  private isFavorite$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private isEmpty$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private favoriteUpdated$$: BehaviorSubject<void> = new BehaviorSubject<void>(undefined);
-  private fiveDaysForecasts$$: BehaviorSubject<DailyForecast[]> = new BehaviorSubject<DailyForecast[]>([]);
-
-  readonly API_HOST = environment.API_HOST;
-  readonly API_KEY = environment.API_KEY;
 
   constructor(private readonly http: HttpClient,
-              private localStorageService: LocalStorageService) {
-  }
+              private localStorageService: LocalStorageService,
+              private requests: RequestsService
+  ) {}
 
-  setSearchResult(location: SearchResult): void {
-    this.searchResult$$.next(location);
-  }
-
-  getSearchResult(): Observable<SearchResult> {
-    return this.searchResult$$.asObservable();
-  }
-
-  setCurrentConditions(conditions: WeatherConditions): void {
-    this.currentConditions$$.next(conditions);
-  }
-
-  getCurrentForecast(): Observable<WeatherConditions> {
-    return this.currentConditions$$.asObservable();
-  }
-
-  setCityName(cityName: string): void {
-    this.cityName$$.next(cityName);
-  }
-
-  setIsEmpty(isEmpty: boolean): void {
-    this.isEmpty$$.next(isEmpty);
-  }
-
-  getIsEmpty(): Observable<boolean> {
-    return this.isEmpty$$.asObservable();
-  }
-
-  getCityName(): Observable<string> {
-    return this.cityName$$.asObservable();
-  }
-
-  setIsFavorite(isFav: boolean): void {
-    this.isFavorite$$.next(isFav);
-  }
-
-  getIsFavorite(): Observable<boolean> {
-    return this.isFavorite$$.asObservable();
-  }
-
-  setFiveDaysForecasts(forecasts: DailyForecast[]): void {
-    this.fiveDaysForecasts$$.next(forecasts);
-  }
-
-  getFiveForecasts(): Observable<DailyForecast[]> {
-    return this.fiveDaysForecasts$$.asObservable();
-  }
 
   getFavoriteUpdated(): Observable<void> {
     return this.favoriteUpdated$$.asObservable();
@@ -91,24 +34,6 @@ export class WeatherService {
 
   getFavoritesListFromStorage():FavoriteLocation[] {
     return this.localStorageService.getData('favorites')
-  }
-
-  private getCityInfo(query: string): Observable<SearchResult[]> {
-    return this.http.get<SearchResult[]>(`${this.API_HOST}/${this.URLBodies.autocomplete}`, {
-      params: {apikey: this.API_KEY, q: query}
-    })
-  }
-
-  private getForecastInfo(locationKey: string): Observable<WeatherConditions[]> {
-    return this.http.get<WeatherConditions[]>(`${this.API_HOST}/${this.URLBodies.currentWeather}/${locationKey}`, {
-      params: {apikey: this.API_KEY}
-    })
-  }
-
-  private getFutureForecasts(locationKey: string): Observable<FutureForecasts> {
-    return this.http.get<FutureForecasts>(`${this.API_HOST}/${this.URLBodies.fiveDaysForecasts}/${locationKey}`, {
-      params: {apikey: this.API_KEY, metric: true}
-    })
   }
 
   addToFavoriteList(location: FavoriteLocation): void {
@@ -148,9 +73,9 @@ export class WeatherService {
   searchLocation(query: string): Observable<SearchResult[]> {
     this.favoriteUpdated$$.next();
     if (environment.production) {
-      return this.getCityInfo(query);
+      return this.requests.getCityInfo(query);
     } else if (!this.localStorageService.isDataExist(query)) {
-      return this.getCityInfo(query)
+      return this.requests.getCityInfo(query)
         .pipe(
           tap((response: SearchResult[]) => {
             this.localStorageService.setData(query, response);
@@ -166,9 +91,9 @@ export class WeatherService {
 
   getFiveDaysForecasts(locationKey: string): Observable<FutureForecasts> {
     if (environment.production) {
-      return this.getFutureForecasts(locationKey);
+      return this.requests.getFutureForecasts(locationKey);
     } else if (!this.localStorageService.isDataExist(`${locationKey}_5Days`)) {
-      return this.getFutureForecasts(locationKey)
+      return this.requests.getFutureForecasts(locationKey)
         .pipe(
           tap((response: FutureForecasts) => {
             this.localStorageService.setData(`${locationKey}_5Days`, response);
@@ -184,9 +109,9 @@ export class WeatherService {
 
   getCurrentWeatherConditions(locationKey: string): Observable<WeatherConditions[]> {
     if (environment.production) {
-      return this.getForecastInfo(locationKey);
+      return this.requests.getForecastInfo(locationKey);
     } else if (!this.localStorageService.isDataExist(locationKey)) {
-      return this.getForecastInfo(locationKey)
+      return this.requests.getForecastInfo(locationKey)
         .pipe(
           tap((response: WeatherConditions[]) => {
             this.localStorageService.setData(locationKey, response);

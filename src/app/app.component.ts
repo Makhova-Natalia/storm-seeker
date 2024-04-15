@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./shared/components/header/header.component";
 import { LoadingSpinnerComponent } from "./shared/components/loading-spinner/loading-spinner.component";
 
@@ -9,9 +9,11 @@ import { LoadingSpinnerComponent } from "./shared/components/loading-spinner/loa
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
     HeaderComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    RouterLink,
+    RouterOutlet,
+    RouterLinkActive
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

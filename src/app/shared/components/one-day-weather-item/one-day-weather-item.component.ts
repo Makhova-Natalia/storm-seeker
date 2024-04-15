@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { MaterialModule } from "../../../material-module";
 import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
-import { WeatherService } from "../../../core/services/weather.service";
 import { DAYS_OF_WEEK } from "../../../core/models/weatherData.config";
+import { ParametersService } from "../../../core/services/parameters.service";
 
 @Component({
   selector: 'app-one-day-weather-item',
@@ -19,8 +19,10 @@ export class OneDayWeatherItemComponent {
   @Input() weatherInfo: string;
   @Input() allowNavigation: boolean;
 
-  constructor(private router: Router, private weatherService: WeatherService) {
-  }
+  constructor(
+    private router: Router,
+    private parametersService: ParametersService
+  ) {}
 
   getDayOfWeek(dateString: string): string {
     const daysOfWeek = DAYS_OF_WEEK;
@@ -31,7 +33,7 @@ export class OneDayWeatherItemComponent {
   }
 
   navigateToHomePage() {
-    this.weatherService.setCityName(this.param)
+    this.parametersService.setCityName(this.param)
     this.router.navigate(['/home']);
   }
 }

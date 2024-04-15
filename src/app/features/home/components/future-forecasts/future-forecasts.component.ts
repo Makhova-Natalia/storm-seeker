@@ -8,6 +8,7 @@ import {
   OneDayWeatherItemComponent
 } from "../../../../shared/components/one-day-weather-item/one-day-weather-item.component";
 import { ICONS } from "../../../../core/models/weatherData.config";
+import { ParametersService } from "../../../../core/services/parameters.service";
 
 @Component({
   selector: 'app-future-forecasts',
@@ -23,11 +24,12 @@ export class FutureForecastsComponent implements OnInit, OnDestroy {
   ICONS_NAME: { [key: string]: string } = ICONS;
   fiveDaysForecasts: DailyForecast[] = [];
 
-  constructor(private weatherService: WeatherService) {
+  constructor(private parametersService: ParametersService,
+              private weatherService: WeatherService) {
   }
 
   ngOnInit() {
-    this.weatherService.getSearchResult()
+    this.parametersService.getSearchResult()
       .pipe(
         filter((city: SearchResult) => !!city.Key),
         switchMap((city: SearchResult) => {
@@ -37,7 +39,7 @@ export class FutureForecastsComponent implements OnInit, OnDestroy {
       )
       .subscribe((forecasts: FutureForecasts) => {
         this.fiveDaysForecasts = forecasts.DailyForecasts;
-        this.weatherService.setFiveDaysForecasts(this.fiveDaysForecasts);
+        this.parametersService.setFiveDaysForecasts(this.fiveDaysForecasts);
       });
   }
 

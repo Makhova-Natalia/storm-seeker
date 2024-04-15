@@ -4,6 +4,7 @@ import { CommonModule, NgClass } from "@angular/common";
 import { WeatherService } from "../../../../core/services/weather.service";
 import { FavoriteLocation, SearchResult, WeatherConditions } from "../../../../core/models/weather.model";
 import { BehaviorSubject, forkJoin, Observable, Subject, takeUntil, tap } from "rxjs";
+import { ParametersService } from "../../../../core/services/parameters.service";
 
 @Component({
   selector: 'app-add-favorite',
@@ -23,7 +24,8 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
   isFavorite$: Observable<boolean>;
 
 
-  constructor(private weatherService: WeatherService) {
+  constructor(private parametersService: ParametersService,
+              private weatherService: WeatherService) {
     this.isFavoriteSubject$$ = new BehaviorSubject<boolean>(this.weatherService.checkFavoriteList(this.setFavoriteLocation().cityName));
     this.isFavorite$ = this.isFavoriteSubject$$.asObservable();
   }
@@ -62,7 +64,7 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
   }
 
   private setCityName(): Observable<string> {
-    return this.weatherService.getCityName()
+    return this.parametersService.getCityName()
       .pipe(
         takeUntil(this.destroyed$$),
         tap((city: string) => {
@@ -72,7 +74,7 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
   }
 
   private setIsFavorite(): void {
-    this.weatherService.getIsFavorite()
+    this.parametersService.getIsFavorite()
       .pipe(
         takeUntil(this.destroyed$$),
         tap((isFav: boolean) => {
@@ -83,7 +85,7 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
   }
 
   private setCurrentForecast(): Observable<WeatherConditions> {
-    return this.weatherService.getCurrentForecast()
+    return this.parametersService.getCurrentForecast()
       .pipe(
         takeUntil(this.destroyed$$),
         tap((weather: WeatherConditions) => {
@@ -95,7 +97,7 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
   }
 
   private setId(): Observable<SearchResult> {
-    return this.weatherService.getSearchResult()
+    return this.parametersService.getSearchResult()
       .pipe(
         takeUntil(this.destroyed$$),
         tap((city: SearchResult) => {
@@ -105,7 +107,7 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
   }
 
   toggleFavorite() {
-    this.weatherService.setIsFavorite(!this.isFavoriteSubject$$.value);
+    this.parametersService.setIsFavorite(!this.isFavoriteSubject$$.value);
 
     if (this.isFavoriteSubject$$.value) {
       this.weatherService.addToFavoriteList(this.setFavoriteLocation());
