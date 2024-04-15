@@ -3,6 +3,7 @@ import { MaterialModule } from "../../../material-module";
 import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
 import { WeatherService } from "../../../core/services/weather.service";
+import { DAYS_OF_WEEK } from "../../../core/models/weatherData.config";
 
 @Component({
   selector: 'app-one-day-weather-item',
@@ -22,7 +23,7 @@ export class OneDayWeatherItemComponent {
   }
 
   getDayOfWeek(dateString: string): string {
-    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const daysOfWeek = DAYS_OF_WEEK;
     const date = new Date(dateString);
     const dayOfWeekIndex = date.getDay();
 

@@ -7,6 +7,7 @@ import { FutureForecastsComponent } from "./components/future-forecasts/future-f
 import { WeatherService } from "../../core/services/weather.service";
 import { CommonModule } from "@angular/common";
 import { Observable, Subject, takeUntil } from "rxjs";
+import { LineChartComponent } from "./components/line-chart/line-chart.component";
 
 @Component({
   selector: 'app-home',
@@ -17,7 +18,8 @@ import { Observable, Subject, takeUntil } from "rxjs";
     AddFavoriteComponent,
     CurrentForecastComponent,
     FutureForecastsComponent,
-    CommonModule
+    CommonModule,
+    LineChartComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'

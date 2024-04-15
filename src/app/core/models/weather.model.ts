@@ -27,6 +27,9 @@ export interface DailyForecast {
     Maximum: {
       Value: string,
       UnitType: number
+    },
+    Minimum: {
+      Value: string,
     }
   },
   Day: {
