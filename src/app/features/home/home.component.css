@@ -24,3 +24,8 @@
   justify-content: center;
   font-size: 28px;
 }
+
+.toggle-forecasts-view {
+  margin: 20px 0;
+  left: 990px;
+}

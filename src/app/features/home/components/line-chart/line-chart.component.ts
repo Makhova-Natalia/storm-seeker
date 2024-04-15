@@ -47,14 +47,19 @@ export class LineChartComponent implements OnInit, AfterViewInit{
             borderColor: 'rgba(54, 162, 235, 1)',
             fill: false
           }
-        ]
+        ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+          }
+        },
+        plugins: {
+          legend: {
+            position: "bottom"
           }
         }
       }
