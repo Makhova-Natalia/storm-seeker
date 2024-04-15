@@ -1,0 +1,7 @@
+.chart-container {
+  width: 800px;
+}
+.main-div{
+  display: flex;
+  justify-content: center;
+}
