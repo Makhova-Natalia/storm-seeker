@@ -1,5 +1,6 @@
 .chart-container {
-  width: 800px;
+  width: 80%;
+  height: 40%;
 }
 .main-div{
   display: flex;

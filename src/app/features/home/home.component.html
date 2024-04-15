@@ -9,8 +9,8 @@
     </mat-card-content>
     <mat-card-content>
       <mat-button-toggle-group [(ngModel)]="showForecastMode" class="toggle-forecasts-view">
-        <mat-button-toggle [value]="true">Forecast</mat-button-toggle>
-        <mat-button-toggle [value]="false">Chart</mat-button-toggle>
+        <mat-button-toggle [value]="true" id="btn_forecasts">Forecast</mat-button-toggle>
+        <mat-button-toggle [value]="false" id="btn_chart">Chart</mat-button-toggle>
       </mat-button-toggle-group>
       <ng-container *ngIf="showForecastMode">
         <app-future-forecasts></app-future-forecasts>

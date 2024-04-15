@@ -23,13 +23,24 @@
 }
 
 .item_temperature {
-  top: 80px;
+  top: 40%;
 }
 
 .item_param {
-  top: 30px;
+  top: 10%;
 }
 
 .item_weather_info {
-  top: 130px;
+  top: 70%;
+}
+
+@media screen and (max-width: 768px) {
+  .item_container {
+    height: 100px;
+    width: 100px;
+  }
+
+  .item_container p {
+    font-size: 14px;
+  }
 }
