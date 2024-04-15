@@ -47,9 +47,9 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
           }
         })
       )
-      .subscribe(val => {
+      .subscribe(() => {
+        this.weatherService.setCityName(this.cityName);
       })
-    this.weatherService.setCityName(this.cityName);
   }
 
   searchLocation(): void {
