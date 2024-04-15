@@ -10,6 +10,7 @@ import { AuthInterceptor } from "./core/services/auth.interceptor";
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
+    provideHttpClient(withInterceptors([AuthInterceptor])),
     provideAnimations(),
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
@@ -18,6 +19,5 @@ export const appConfig: ApplicationConfig = {
         appearance: 'outline'
       }
     },
-    provideHttpClient(withInterceptors([AuthInterceptor]))
   ]
 };

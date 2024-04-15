@@ -4,6 +4,8 @@ import { FormsModule } from "@angular/forms";
 import { WeatherService } from "../../../../core/services/weather.service";
 import { Subject, takeUntil, tap } from "rxjs";
 import { SearchResult } from "../../../../core/models/weather.model";
+import { LoadingService } from "../../../../core/services/loading.service";
+import { englishPattern } from "../../../../core/models/weatherData.config";
 
 @Component({
   selector: 'app-search-location',
@@ -14,10 +16,14 @@ import { SearchResult } from "../../../../core/models/weather.model";
 })
 export class SearchLocationComponent implements OnInit, OnDestroy {
   private destroyed$$: Subject<void> = new Subject<void>();
+  englishPattern: RegExp = englishPattern;
 
   cityName: string = '';
 
-  constructor(private weatherService: WeatherService) {
+  constructor(
+    private weatherService: WeatherService,
+    private loadingService: LoadingService
+  ) {
   }
 
   ngOnInit() {
@@ -39,11 +45,13 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed$$),
         tap((val: SearchResult[]) => {
           if (!val.length) {
+            this.loadingService.setLoading(false);
             this.weatherService.setIsEmpty(true);
           } else {
             this.weatherService.setIsEmpty(false);
             this.weatherService.setSearchResult(val[0]);
             this.getWeatherConditions(val[0].Key);
+            this.loadingService.setLoading(false);
           }
         })
       )
@@ -53,6 +61,7 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
   }
 
   searchLocation(): void {
+    if(!this.englishPattern.test(this.cityName)) return;
     this.fetchWeatherData(this.cityName);
     this.weatherService.setIsFavorite(this.weatherService.checkFavoriteList(this.cityName));
   }

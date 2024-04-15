@@ -9,6 +9,7 @@ import { CommonModule } from "@angular/common";
 import { Observable, Subject, takeUntil } from "rxjs";
 import { LineChartComponent } from "./components/line-chart/line-chart.component";
 import { FormsModule } from "@angular/forms";
+import { LoadingService } from "../../core/services/loading.service";
 
 @Component({
   selector: 'app-home',
@@ -28,14 +29,19 @@ import { FormsModule } from "@angular/forms";
 })
 export class HomeComponent implements OnInit, OnDestroy {
   private destroyed$$: Subject<void> = new Subject<void>();
+  loading$: Observable<boolean>;
 
   showForecastMode: boolean = true;
   isEmpty$: Observable<boolean>;
 
-  constructor(private weatherService: WeatherService) {
+  constructor(
+    private weatherService: WeatherService,
+    private loadingService: LoadingService
+  ) {
   }
 
   ngOnInit() {
+    this.loading$ = this.loadingService.getLoading();
     this.isEmpty$ = this.weatherService.getIsEmpty().pipe(
       takeUntil(this.destroyed$$)
     );

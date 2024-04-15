@@ -12,7 +12,6 @@ import {
 import { URL_BODIES } from "../models/weatherData.config";
 import { LocalStorageService } from "./local-storage.service";
 
-
 @Injectable({
   providedIn: 'root'
 })

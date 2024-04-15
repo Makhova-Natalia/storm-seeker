@@ -56,3 +56,5 @@ export const DAYS_OF_WEEK = [
   'Friday',
   'Saturday'
 ];
+
+export const englishPattern = /^[a-zA-Z -]*$/;
