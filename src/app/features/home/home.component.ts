@@ -7,6 +7,8 @@ import { FutureForecastsComponent } from "./components/future-forecasts/future-f
 import { WeatherService } from "../../core/services/weather.service";
 import { CommonModule } from "@angular/common";
 import { Observable, Subject, takeUntil } from "rxjs";
+import { LineChartComponent } from "./components/line-chart/line-chart.component";
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: 'app-home',
@@ -17,7 +19,9 @@ import { Observable, Subject, takeUntil } from "rxjs";
     AddFavoriteComponent,
     CurrentForecastComponent,
     FutureForecastsComponent,
-    CommonModule
+    CommonModule,
+    LineChartComponent,
+    FormsModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
@@ -25,6 +29,7 @@ import { Observable, Subject, takeUntil } from "rxjs";
 export class HomeComponent implements OnInit, OnDestroy {
   private destroyed$$: Subject<void> = new Subject<void>();
 
+  showForecastMode: boolean = true;
   isEmpty$: Observable<boolean>;
 
   constructor(private weatherService: WeatherService) {

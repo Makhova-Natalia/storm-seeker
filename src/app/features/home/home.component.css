@@ -1,6 +1,6 @@
 .home_container {
   padding: 10px 150px;
-  height: 100%;
+  height: auto;
   position: relative;
 }
 
@@ -23,4 +23,9 @@
   display: flex;
   justify-content: center;
   font-size: 28px;
+}
+
+.toggle-forecasts-view {
+  margin: 20px 0;
+  left: 990px;
 }

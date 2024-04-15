@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { WeatherService } from "../../../../core/services/weather.service";
-import { Subject, switchMap, takeUntil } from "rxjs";
+import { filter, Subject, switchMap, takeUntil } from "rxjs";
 import { DailyForecast, FutureForecasts, SearchResult } from "../../../../core/models/weather.model";
 import { MaterialModule } from "../../../../material-module";
 import { CommonModule } from "@angular/common";
@@ -29,6 +29,7 @@ export class FutureForecastsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.weatherService.getSearchResult()
       .pipe(
+        filter((city: SearchResult) => !!city.Key),
         switchMap((city: SearchResult) => {
           return this.weatherService.getFiveDaysForecasts(city.Key);
         }),
@@ -36,6 +37,7 @@ export class FutureForecastsComponent implements OnInit, OnDestroy {
       )
       .subscribe((forecasts: FutureForecasts) => {
         this.fiveDaysForecasts = forecasts.DailyForecasts;
+        this.weatherService.setFiveDaysForecasts(this.fiveDaysForecasts);
       });
   }
 
