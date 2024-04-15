@@ -147,6 +147,7 @@ export class WeatherService {
   }
 
   searchLocation(query: string): Observable<SearchResult[]> {
+    this.favoriteUpdated$$.next();
     if (environment.production) {
       return this.getCityInfo(query);
     } else if (!this.localStorageService.isDataExist(query)) {
@@ -183,7 +184,6 @@ export class WeatherService {
   }
 
   getCurrentWeatherConditions(locationKey: string): Observable<WeatherConditions[]> {
-    this.favoriteUpdated$$.next();
     if (environment.production) {
       return this.getForecastInfo(locationKey);
     } else if (!this.localStorageService.isDataExist(locationKey)) {

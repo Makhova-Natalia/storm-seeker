@@ -3,12 +3,12 @@ import { MaterialModule } from "../../../../material-module";
 import { CommonModule, NgClass } from "@angular/common";
 import { WeatherService } from "../../../../core/services/weather.service";
 import { FavoriteLocation, SearchResult, WeatherConditions } from "../../../../core/models/weather.model";
-import { BehaviorSubject, Observable, Subject, takeUntil, tap } from "rxjs";
+import { BehaviorSubject, forkJoin, Observable, Subject, takeUntil, tap } from "rxjs";
 
 @Component({
   selector: 'app-add-favorite',
   standalone: true,
-  imports: [MaterialModule, NgClass, CommonModule],
+  imports: [ MaterialModule, NgClass, CommonModule ],
   templateUrl: './add-favorite.component.html',
   styleUrl: './add-favorite.component.css'
 })
@@ -37,14 +37,18 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed$$)
       )
       .subscribe(() => {
-      this.isFavoriteSubject$$.next(this.weatherService.checkFavoriteList(this.setFavoriteLocation().cityName));
-    })
+        this.isFavoriteSubject$$.next(this.weatherService.checkFavoriteList(this.setFavoriteLocation().cityName));
+      })
   }
 
   private setForecast(): void {
-    this.setCityName();
-    this.setCurrentForecast();
-    this.setId();
+    forkJoin({
+      cityName: this.setCityName(),
+      currentForecast: this.setCurrentForecast(),
+      id: this.setId()
+    }).pipe(
+      takeUntil(this.destroyed$$)
+    ).subscribe();
   }
 
   private setFavoriteLocation(): FavoriteLocation {
@@ -57,15 +61,14 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setCityName(): void {
-    this.weatherService.getCityName()
+  private setCityName(): Observable<string> {
+    return this.weatherService.getCityName()
       .pipe(
         takeUntil(this.destroyed$$),
         tap((city: string) => {
           this.cityName = city;
         })
       )
-      .subscribe();
   }
 
   private setIsFavorite(): void {
@@ -79,8 +82,8 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  private setCurrentForecast(): void {
-    this.weatherService.getCurrentForecast()
+  private setCurrentForecast(): Observable<WeatherConditions> {
+    return this.weatherService.getCurrentForecast()
       .pipe(
         takeUntil(this.destroyed$$),
         tap((weather: WeatherConditions) => {
@@ -89,18 +92,16 @@ export class AddFavoriteComponent implements OnInit, OnDestroy {
           this.weatherIcon = weather.WeatherIcon;
         })
       )
-      .subscribe();
   }
 
-  private setId(): void {
-    this.weatherService.getSearchResult()
+  private setId(): Observable<SearchResult> {
+    return this.weatherService.getSearchResult()
       .pipe(
         takeUntil(this.destroyed$$),
         tap((city: SearchResult) => {
           this.id = city.Key;
         })
       )
-      .subscribe()
   }
 
   toggleFavorite() {
