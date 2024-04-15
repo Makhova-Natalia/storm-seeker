@@ -32,10 +32,6 @@ export class WeatherService {
     return this.favoritesList$$.asObservable();
   }
 
-  getFavoritesListFromStorage():FavoriteLocation[] {
-    return this.localStorageService.getData('favorites')
-  }
-
   addToFavoriteList(location: FavoriteLocation): void {
     const favorites = this.favoritesList$$.value;
     const isIncludedCity = favorites.some(favorite => favorite.id === location.id);

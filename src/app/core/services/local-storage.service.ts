@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
+import { FavoriteLocation } from "../models/weather.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocalStorageService {
 
-  constructor() {
-  }
+  constructor() {}
 
   setData(key: string, value: any): void {
     localStorage.setItem(key, JSON.stringify(value));
@@ -22,5 +22,9 @@ export class LocalStorageService {
 
   isDataExist(key: string): boolean {
     return Boolean(localStorage.getItem(key));
+  }
+
+  getFavoritesListFromStorage(): FavoriteLocation[] {
+    return this.getData('favorites')
   }
 }
