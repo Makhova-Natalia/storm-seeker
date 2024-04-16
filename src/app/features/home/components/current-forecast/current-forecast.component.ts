@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MaterialModule } from "../../../../material-module";
 import { WeatherConditions } from "../../../../core/models/weather.model";
-import { WeatherService } from "../../../../core/services/weather.service";
 import { Subject, takeUntil, tap } from "rxjs";
 import { ICONS } from "../../../../core/models/weatherData.config";
+import { ParametersService } from "../../../../core/services/parameters.service";
 
 @Component({
   selector: 'app-current-forecast',
@@ -25,7 +25,7 @@ export class CurrentForecastComponent implements OnInit, OnDestroy {
   weatherIcon: string;
   temperature: string;
 
-  constructor(private weatherService: WeatherService) {
+  constructor(private parametersService: ParametersService) {
   }
 
   ngOnInit() {
@@ -34,7 +34,7 @@ export class CurrentForecastComponent implements OnInit, OnDestroy {
   }
 
   private getDataForecast(): void {
-    this.weatherService.getCurrentForecast()
+    this.parametersService.getCurrentForecast()
       .pipe(
         takeUntil(this.destroyed$$),
         tap((conditions: WeatherConditions) => {
@@ -52,7 +52,7 @@ export class CurrentForecastComponent implements OnInit, OnDestroy {
   }
 
   private setCityName() {
-    this.weatherService.getCityName()
+    this.parametersService.getCityName()
       .pipe(
         takeUntil(this.destroyed$$),
         tap((cityName: string) => {

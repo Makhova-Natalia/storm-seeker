@@ -9,6 +9,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonToggleModule } from "@angular/material/button-toggle";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
   exports: [
@@ -22,6 +23,7 @@ import { MatButtonToggleModule } from "@angular/material/button-toggle";
     MatFormFieldModule,
     MatCardModule,
     MatButtonToggleModule,
+    MatProgressSpinnerModule
   ]
 })
 

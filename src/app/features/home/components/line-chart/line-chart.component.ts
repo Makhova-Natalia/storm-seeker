@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Chart, registerables } from "chart.js";
 import { MaterialModule } from "../../../../material-module";
 import { DailyForecast } from "../../../../core/models/weather.model";
-import { WeatherService } from "../../../../core/services/weather.service";
 import { DAYS_OF_WEEK } from "../../../../core/models/weatherData.config";
+import { ParametersService } from "../../../../core/services/parameters.service";
 
 @Component({
   selector: 'app-line-chart',
@@ -18,13 +18,13 @@ export class LineChartComponent implements OnInit, AfterViewInit{
 
   chart: any;
 
-  constructor(private weatherService: WeatherService) {
+  constructor(private parametersService: ParametersService) {
   }
 
   ngOnInit() {
     this.chart = document.getElementById('chart');
     Chart.register(...registerables);
-    this.weatherService.getFiveForecasts().subscribe((list: DailyForecast[]) => {
+    this.parametersService.getFiveForecasts().subscribe((list: DailyForecast[]) => {
       this.fiveDaysForecasts = list;
     })
   }

@@ -8,6 +8,7 @@ import { WeatherService } from "../../core/services/weather.service";
 import { of, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { ICONS } from "../../core/models/weatherData.config";
 import { CommonModule } from "@angular/common";
+import { LocalStorageService } from "../../core/services/local-storage.service";
 
 @Component({
   selector: 'app-favorites',
@@ -23,7 +24,10 @@ export class FavoritesComponent implements OnInit, OnDestroy {
 
   ICONS_NAME: { [key: string]: string } = ICONS;
 
-  constructor(private weatherService: WeatherService) {
+  constructor(
+    private weatherService: WeatherService,
+    private localStorageService: LocalStorageService
+  ) {
   }
 
   ngOnInit() {
@@ -33,7 +37,7 @@ export class FavoritesComponent implements OnInit, OnDestroy {
         if (list.length) {
           return of(list)
         } else {
-          const storageList = this.weatherService.getFavoritesListFromStorage();
+          const storageList = this.localStorageService.getFavoritesListFromStorage();
           return storageList ? of(storageList) : of([]);
         }
       }),

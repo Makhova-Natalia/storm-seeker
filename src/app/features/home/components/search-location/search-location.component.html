@@ -1,5 +1,5 @@
 <mat-form-field class="search_field">
-  <input matInput [(ngModel)]="cityName">
+  <input matInput [(ngModel)]="cityName" pattern="^[a-zA-Z \-]*$">
 </mat-form-field>
 <span class="spacer"></span>
 <button mat-raised-button color="primary" (click)="searchLocation()" class="search_btn">Search</button>

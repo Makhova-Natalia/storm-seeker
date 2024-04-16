@@ -4,6 +4,9 @@ import { FormsModule } from "@angular/forms";
 import { WeatherService } from "../../../../core/services/weather.service";
 import { Subject, takeUntil, tap } from "rxjs";
 import { SearchResult } from "../../../../core/models/weather.model";
+import { LoadingService } from "../../../../core/services/loading.service";
+import { englishPattern } from "../../../../core/models/weatherData.config";
+import { ParametersService } from "../../../../core/services/parameters.service";
 
 @Component({
   selector: 'app-search-location',
@@ -14,14 +17,19 @@ import { SearchResult } from "../../../../core/models/weather.model";
 })
 export class SearchLocationComponent implements OnInit, OnDestroy {
   private destroyed$$: Subject<void> = new Subject<void>();
+  englishPattern: RegExp = englishPattern;
 
   cityName: string = '';
 
-  constructor(private weatherService: WeatherService) {
+  constructor(
+    private weatherService: WeatherService,
+    private loadingService: LoadingService,
+    private parametersService: ParametersService
+  ) {
   }
 
   ngOnInit() {
-    this.weatherService.getCityName()
+    this.parametersService.getCityName()
       .pipe(
         takeUntil(this.destroyed$$),
         tap((city: string) => {
@@ -39,22 +47,25 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed$$),
         tap((val: SearchResult[]) => {
           if (!val.length) {
-            this.weatherService.setIsEmpty(true);
+            this.loadingService.setLoading(false);
+            this.parametersService.setIsEmpty(true);
           } else {
-            this.weatherService.setIsEmpty(false);
-            this.weatherService.setSearchResult(val[0]);
+            this.parametersService.setIsEmpty(false);
+            this.parametersService.setSearchResult(val[0]);
             this.getWeatherConditions(val[0].Key);
+            this.loadingService.setLoading(false);
           }
         })
       )
       .subscribe(() => {
-        this.weatherService.setCityName(this.cityName);
+        this.parametersService.setCityName(this.cityName);
       })
   }
 
   searchLocation(): void {
+    if(!this.englishPattern.test(this.cityName)) return;
     this.fetchWeatherData(this.cityName);
-    this.weatherService.setIsFavorite(this.weatherService.checkFavoriteList(this.cityName));
+    this.parametersService.setIsFavorite(this.weatherService.checkFavoriteList(this.cityName));
   }
 
   getWeatherConditions(locationKey: string): void {
@@ -63,7 +74,7 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed$$)
       )
       .subscribe(val => {
-        this.weatherService.setCurrentConditions(val[0]);
+        this.parametersService.setCurrentConditions(val[0]);
       });
   }
 
