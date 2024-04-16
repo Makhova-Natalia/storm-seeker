@@ -1,5 +1,5 @@
 import { DailyForecastStub } from "./dailyForecastStub";
 
-export class FutureForecastsStub {
-  DailyForecasts: DailyForecastStub[]
+export const FutureForecastsStub = {
+  DailyForecasts: [DailyForecastStub,DailyForecastStub],
 }

@@ -1,5 +1,5 @@
-export class DailyForecastStub {
-  Date: '02/04';
+export const DailyForecastStub = {
+  Date: '02/04',
   Temperature: {
     Maximum: {
       Value: "17",
@@ -8,8 +8,8 @@ export class DailyForecastStub {
     Minimum: {
       Value: "10",
     }
-  };
+  },
   Day: {
     Icon: 14,
-  };
+  },
 }

@@ -1,3 +1,3 @@
-export class SearchResultStub {
+export const SearchResultStub = {
   Key: 'key'
 }
